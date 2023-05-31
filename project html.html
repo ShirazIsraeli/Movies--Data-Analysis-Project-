@@ -1,0 +1,258 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"><html><head><META http-equiv="Content-Type" content="text/html; charset=utf-8"><style>h1{font-size:34px}h1.m_title{font-size:38px}h2{font-size:30px}h3{font-size:24px}h4{font-size:18px}h5{font-size:16px}h6{font-size:12px}code{color:inherit;background-color:rgba(0,0,0,0.04)}code{white-space:pre-wrap}span.m_smallcaps{font-variant:small-caps}span.m_underline{text-decoration:underline}div.m_column{display:inline-block;vertical-align:top;width:50%}div.m_hanging-indent{margin-left:1.5em}ul.m_task-list{list-style:none}code{white-space:pre-wrap}.m_main-container{max-width:940px;margin-left:auto;margin-right:auto}img{max-width:100%}.m_tabbed-pane{padding-top:12px}.m_html-widget{margin-bottom:20px}summary{display:list-item}pre code{padding:0}.m_tabset-dropdown>.m_nav-tabs{display:inline-table;max-height:500px;min-height:44px;overflow-y:auto;border:1px solid #ddd;border-radius:4px}.m_tabset-dropdown>.m_nav-tabs>li.m_active{display:block}.m_tabset-dropdown>.m_nav-tabs>li>a,.m_tabset-dropdown>.m_nav-tabs>li>a:hover{border:none;display:inline-block;border-radius:4px;background-color:transparent}.m_tabset-dropdown>.m_nav-tabs.m_nav-tabs-open>li{display:block;float:none}.m_tabset-dropdown>.m_nav-tabs>li{display:none}</style></head><body><u></u>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div>
+
+
+<div class="m_container-fluid m_main-container">
+
+
+
+
+<div id="m_header">
+
+
+
+<h1 class="m_title m_toc-ignore">Movies on Netflix, Prime, Hulu and Disney+ Analysis</h1>
+<h4 class="m_author">Dana Eilam, Sivan Itzhaki, Shiraz Israeli</h4>
+<h4 class="m_date">1.6.2021</h4>
+
+</div>
+
+
+<div id="m_background-and-goals" class="m_section m_level1">
+<h1>Background and goals</h1>
+<p>In this project, we wanted to analyze information about some of the best movies on our most familiar platforms, like Netflix, Prime video and more. you can find the data set we used <a href="https://www.google.com/url?q=https://www.kaggle.com/ruchi798/movies-on-netflix-prime-video-hulu-and-disney&amp;source=gmail-html&amp;ust=1623668201524000&amp;usg=AFQjCNGwuVvNhvZfOqiK5qSieR5cmYOljQ" target="_blank" rel="noreferrer">here</a>.</p>
+<p>We wanted to take this everyday subject and thoroughly study it. Our main questions were:</p>
+<ul>
+<li><p>Is there a linear correlation between IMDb ratings and Rotten Tomatoes ratings?</p></li>
+<li><p>Is there a certain distribution to IMDb ratings?</p></li>
+</ul>
+<div id="m_importing-the-data-set-and-tidying" class="m_section m_level2">
+<h2>Importing the data set and Tidying</h2>
+<p>First we will need to import our data set, which is a simple CSV table. Afterwards we will need to adjust a few things. We can see some NA values in the table, so letâs remove any instance of NA values, while keeping the structural integrity of the table.</p>
+<pre><code>## 
+## -- Column specification ------------------------------<wbr>--------------------------
+## cols(
+##   X1 = col_double(),
+##   ID = col_double(),
+##   Title = col_character(),
+##   Year = col_double(),
+##   Age = col_character(),
+##   IMDb = col_double(),
+##   `Rotten Tomatoes` = col_character(),
+##   Netflix = col_double(),
+##   Hulu = col_double(),
+##   `Prime Video` = col_double(),
+##   `Disney+` = col_double(),
+##   Type = col_double(),
+##   Directors = col_character(),
+##   Genres = col_character(),
+##   Country = col_character(),
+##   Language = col_character(),
+##   Runtime = col_double()
+## )</code></pre>
+</div>
+</div>
+<div id="m_transformation-and-visualization" class="m_section m_level1">
+<h1>Transformation and Visualization</h1>
+<div id="m_transformation" class="m_section m_level2">
+<h2>Transformation</h2>
+<p>We noticed that the values of Rotten Tomatoes arenât represented as numbers, but as strings of percentages. So we needed to transform each value to a number, and for a better comparison and convenience, we transformed it to a scale of 1 - 10, just like IMDb ratings scale.</p>
+<pre class="m_r"><code>movies$`Rotten Tomatoes` &lt;- as.numeric(sub(&quot;%&quot;, &quot;&quot;, movies$`Rotten Tomatoes`))/10
+glimpse(movies)</code></pre>
+<pre><code>## Rows: 3,301
+## Columns: 12
+## $ ID                &lt;dbl&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 1~
+## $ Title             &lt;chr&gt; &quot;Inception&quot;, &quot;The Matrix&quot;, &quot;Avengers: Infinity War&quot;,~
+## $ Year              &lt;dbl&gt; 2010, 1999, 2018, 1985, 1966, 2018, 2002, 2012, 1981~
+## $ Age               &lt;chr&gt; &quot;13+&quot;, &quot;18+&quot;, &quot;13+&quot;, &quot;7+&quot;, &quot;18+&quot;, &quot;7+&quot;, &quot;18+&quot;, &quot;18+&quot;~
+## $ IMDb              &lt;dbl&gt; 8.8, 8.7, 8.5, 8.5, 8.8, 8.4, 8.5, 8.4, 8.4, 8.3, 8.~
+## $ `Rotten Tomatoes` &lt;dbl&gt; 8.7, 8.7, 8.4, 9.6, 9.7, 9.7, 9.5, 8.7, 9.5, 8.9, 9.~
+## $ Netflix           &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1~
+## $ Hulu              &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0~
+## $ `Prime Video`     &lt;dbl&gt; 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0~
+## $ `Disney+`         &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0~
+## $ Type              &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0~
+## $ Directors         &lt;chr&gt; &quot;Christopher Nolan&quot;, &quot;Lana Wachowski,Lilly Wachowski&quot;, &quot;Anthony Russo,Joe Russo&quot;, &quot;Robert Zemeckis&quot;, &quot;Sergio Leone&quot;, &quot;Bob Persichetti,Peter Ramsey,Rodney Rothman&quot;, &quot;Roman Polanski&quot;, &quot;Quentin Tarantino&quot;, &quot;Steven Spielberg&quot;, &quot;Quentin Tarantino&quot;, &quot;Martin Scorsese&quot;, &quot;Rajkumar Hirani&quot;, &quot;Guillermo del Toro&quot;, &quot;Lenny Abrahamson&quot;, &quot;Terry Gilliam,Terry Jones&quot;, &quot;Sergio Leone&quot;, &quot;Steven Spielberg&quot;, &quot;Harold Ramis&quot;, &quot;Tom Hooper&quot;, &quot;Spike Jonze&quot;, &quot;Paul Thomas Anderson&quot;, &quot;David Fincher&quot;, &quot;Jean-Marc Vall&lt;U+00E9&gt;e&quot;, &quot;Stephen Chbosky&quot;, &quot;Terry Jones&quot;, &quot;Alex Garland&quot;</code></pre>
+</div>
+<div id="m_visualization" class="m_section m_level2">
+<h2>Visualization</h2>
+<p>Letâs see of the interesting information we got to work with.</p>
+<p>First letâs have a look at the top ten movies by IMDb:</p>
+<pre class="m_r"><code>movies%&gt;%
+  arrange(desc(IMDb))%&gt;%
+  slice(1:10)%&gt;%
+  select(Title)</code></pre>
+<pre><code>## # A tibble: 10 x 1
+##    Title                             
+##    &lt;chr&gt;                             
+##  1 The Dark Knight                   
+##  2 Inception                         
+##  3 The Good, the Bad and the Ugly    
+##  4 The Matrix                        
+##  5 GoodFellas                        
+##  6 Hearing Is Believing              
+##  7 Star Wars: The Empire Strikes Back
+##  8 Parasite                          
+##  9 The Green Mile                    
+## 10 It&#39;s a Wonderful Life</code></pre>
+<p>Letâs also have a look at the top ten movies by Rotten Tomatoes:</p>
+<pre class="m_r"><code>movies%&gt;%
+  arrange(desc(`Rotten Tomatoes`))%&gt;%
+  slice(1:10)%&gt;%
+  select(Title)</code></pre>
+<pre><code>## # A tibble: 10 x 1
+##    Title                                   
+##    &lt;chr&gt;                                   
+##  1 3 Idiots                                
+##  2 Bad Genius                              
+##  3 Bill Burr: I&#39;m Sorry You Feel That Way  
+##  4 Padman                                  
+##  5 Kabhi Khushi Kabhie Gham                
+##  6 Kapoor &amp; Sons                           
+##  7 Everybody&#39;s Everything                  
+##  8 Kajaki                                  
+##  9 The White Helmets                       
+## 10 John Mulaney: Kid Gorgeous at Radio City</code></pre>
+<p>Letâs compare both of the ratings methods by graphs:</p>
+<pre class="m_r"><code>movies%&gt;%
+  ggplot(aes(IMDb)) + geom_density(fill=&quot;<wbr>lavenderblush&quot;)</code></pre>
+<p><img width="672"></p>
+<pre class="m_r"><code>movies%&gt;%
+  ggplot(aes(`Rotten Tomatoes`)) + geom_density(fill=&quot;mistyrose1&quot;<wbr>)</code></pre>
+<p><img width="672"></p>
+<p>We can see that the IMDb rating has interesting and familiar spread! It could hint on a normal distribution, which weâll check later. another graph that can show the aforementioned spread:</p>
+<pre class="m_r"><code>movies%&gt;%
+  ggplot(aes(IMDb)) + geom_histogram(fill=&quot;<wbr>rosybrown4&quot;)</code></pre>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img width="672"></p>
+<p>Letâs have a look on some other details. Like how the how age affects the rate by IMDb:</p>
+<pre class="m_r"><code>movies %&gt;%
+  ggplot(aes(x=Age, y=IMDb, fill=Age))+
+  geom_boxplot()+
+  stat_smooth(method = &quot;lm&quot;)+
+  scale_fill_brewer(palette = &quot;Pastel2&quot;)</code></pre>
+<pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<p><img width="672"></p>
+<p>We can see that the median of the âAllâ group age is the highest one and the median of the â16+â group age is the lowest one. all of the medians are above a rate of 6.25 on IMDb.</p>
+</div>
+</div>
+<div id="m_modelling" class="m_section m_level1">
+<h1>Modelling</h1>
+<div id="m_linear-regression" class="m_section m_level2">
+<h2>Linear regression</h2>
+<p>We compared both of the rating methods but do they have some kind of linear correlation? Letâs check our thought by using linear regression model.</p>
+<pre class="m_r"><code>model1&lt;-lm(formula = IMDb ~ `Rotten Tomatoes`, data = movies)
+summary(model1)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = IMDb ~ `Rotten Tomatoes`, data = movies)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -4.2383 -0.4346  0.0646  0.4897  2.7838 
+## 
+## Coefficients:
+##                   Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)       4.866900   0.031873  152.70   &lt;2e-16 ***
+## `Rotten Tomatoes` 0.242662   0.004766   50.92   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.7424 on 3299 degrees of freedom
+## Multiple R-squared:  0.4401, Adjusted R-squared:  0.4399 
+## F-statistic:  2593 on 1 and 3299 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="m_r"><code>movies %&gt;% 
+  ggplot(aes(y=IMDb, x= `Rotten Tomatoes`))+
+  geom_point(color=&quot;turquoise4&quot;)<wbr>+
+  stat_smooth(method = &quot;lm&quot;,color=&quot;black&quot;)</code></pre>
+<pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<p><img width="672"></p>
+<p>We can definitely say that these are good results! Although the R-Squared isnât so high, we can see our p-value is really low. Beside the variableâs p-value we can see ***, which stands for the most significant level of variable possible. Based on the really low p-value, and the graph which seems very homoscedastic, we can determine that there is a correlation between IMDb ratings and Rotten Tomatoes ratings.</p>
+</div>
+<div id="m_chi-square-goodness-of-fit-test" class="m_section m_level2">
+<h2>Chi-square goodness of fit test</h2>
+<p>As we saw on the IMDb density graphs weâve shown, we can think that the itâs maybe a normal distribution. Letâs check our thought by using Chi-square goodness of fit test model.</p>
+<p>Our H0 hypothesis: â¦â¦â¦â¦</p>
+<p>our H1 hypothesis: â¦â¦â¦â¦</p>
+<p>(small conclusion for the chi-square test results)</p>
+</div>
+</div>
+<div id="m_conclusion" class="m_section m_level1">
+<h1>Conclusion</h1>
+<p>In our project we experienced and applied the material learned in this course, while researching the everyday subject of movies. We used various visualizations methods we learned in class and weâve shown various familiar graphs. We raised some questions and hypotheses along the project, which eventually been answered with different modeling methods. We hope you gained some information from this project and enjoyed reading it :)</p>
+</div>
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+</body></html>
